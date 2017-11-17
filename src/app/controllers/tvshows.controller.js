@@ -1,3 +1,4 @@
+//File: controllers/tvshows.js
 var mongoose = require('mongoose');
 var TVShow  = mongoose.model('TVShow');
 
@@ -11,7 +12,7 @@ exports.findAllTVShows = function(req, res) {
 	});
 };
 
-//GET - Return TVSHOW by id
+//GET - Return a TVShow with specified ID
 exports.findById = function(req, res) {
 	TVShow.findById(req.params.id, function(err, tvshow) {
     if(err) return res.send(500, err.message);
@@ -37,7 +38,7 @@ exports.addTVShow = function(req, res) {
 	});
 
 	tvshow.save(function(err, tvshow) {
-		if(err) return res.status(500).send( err.message);
+		if(err) return res.send(500, err.message);
     res.status(200).jsonp(tvshow);
 	});
 };
@@ -54,14 +55,8 @@ exports.updateTVShow = function(req, res) {
 		tvshow.summary = req.body.summary;
 
 		tvshow.save(function(err) {
-		if(err){
-			console.log("EROR 500", err);
-			return res.status(500).send(err.message);
-		}else{
-			console.log("200", err);
-			res.status(200).jsonp(tvshow);
-		}
-      	
+			if(err) return res.send(500, err.message);
+      res.status(200).jsonp(tvshow);
 		});
 	});
 };
@@ -70,8 +65,8 @@ exports.updateTVShow = function(req, res) {
 exports.deleteTVShow = function(req, res) {
 	TVShow.findById(req.params.id, function(err, tvshow) {
 		tvshow.remove(function(err) {
-			if(err) return res.status(500).send(err.message);
-      res.status(200).send();
+			if(err) return res.send(500, err.message);
+      res.status(200);
 		})
 	});
 };
