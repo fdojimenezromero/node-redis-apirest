@@ -1,21 +1,41 @@
 var express = require("express"),
-    app = express(),
-    bodyParser  = require("body-parser"),
-    methodOverride = require("method-override");
-    mongoose = require('mongoose');
+  app = express(),
+  http = require("http"),
+  bodyParser = require("body-parser"),
+  methodOverride = require("method-override");
+  server = http.createServer(app),
+  mongoose = require('mongoose');
 
+//DB CONECTION
+mongoose.connect('mongodb://localhost:27017/tvshows', function (err, res) {
+  if (err) throw err;
+  console.log('Connected to Database');
+});
+
+// Middlewares
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(methodOverride());
 
-    var router = express.Router();
+//Import controller and model
+var models     = require('./models/tvshow.model')(app, mongoose);
+var TVShowCtrl = require('./controllers/tvshows.controller');
 
-    router.get('/', function(req, res) {
-    res.send("Hello World!");
-    });
+// API routes express
+var tvshows = express.Router();
 
-app.use(router);
+tvshows.route('/tvshows')
+  .get(TVShowCtrl.findAllTVShows)
+  .post(TVShowCtrl.addTVShow);
 
-app.listen(3000, function() {
+tvshows.route('/tvshows/:id')
+  .get(TVShowCtrl.findById)
+  .put(TVShowCtrl.updateTVShow)
+  .delete(TVShowCtrl.deleteTVShow);
+
+app.use('/api', tvshows);
+
+//STAR SERVER
+app.listen(3000, function () {
   console.log("Node server running on http://localhost:3000");
 });
