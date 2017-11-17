@@ -37,9 +37,15 @@ exports.addTVShow = function(req, res) {
 		summary:  req.body.summary
 	});
 
+	console.log("ANTES DEL SAVE");
 	tvshow.save(function(err, tvshow) {
-		if(err) return res.send(500, err.message);
-    res.status(200).jsonp(tvshow);
+		if(err){
+			console.log("500");
+			return res.send(500, err.message);
+		} else{
+			res.status(200).jsonp(tvshow);
+		}
+    
 	});
 };
 

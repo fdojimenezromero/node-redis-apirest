@@ -7,10 +7,7 @@ var express = require("express"),
   mongoose = require('mongoose');
 
 //DB CONECTION
-mongoose.connect('mongodb://localhost:27017/tvshows', function (err, res) {
-  if (err) throw err;
-  console.log('Connected to Database');
-});
+mongoose.connect('mongodb://127.0.0.1/tvshows');
 
 // Middlewares
 app.use(bodyParser.urlencoded({ extended: false }));
